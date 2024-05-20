@@ -48,4 +48,14 @@ spec:
               value: jira
             - name: POSTGRES_USER
               value: jira
-            - nam
+            - name: POSTGRES_PASSWORD
+              value: jira123
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
