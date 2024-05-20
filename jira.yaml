@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jira
+  namespace: jira
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: jira
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jira
+  namespace: jira
+spec:
+  selector:
+    matchLabels:
+      app: jira
+  template:
+    metadata:
+      labels:
+        app: jira
+    spec:
+      containers:
+        - name: jira
+          image: atlassian/jira-software:9.15.0
+          env:
+            - name: ATL_JDBC_URL
+              value: jdbc:postgresql://postgres:5432/jira
+            - name: ATL_JDBC_USER
+              value: jira
+            - name: ATL_JDBC_PASSWORD
+              value: jira123
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /var/atlassian/application-data/jira
+              name: jira-storage
+      volumes:
+        - name: jira-storage
+          emptyDir: {}
